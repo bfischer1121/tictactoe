@@ -92,7 +92,7 @@ const App: React.FC<{}> = () => {
     <Wrap>
       <GlobalStyle />
       <Board cells={cells} winner={winner} {...(humanPlaying ? { onCellClick: selectCell } : {})} />
-      {(winner || isDraw) && (
+      {(winner || draw) && (
         <>
           {draw && <Outcome>Draw!</Outcome>}
           {winner && <Outcome>{winner.player === 'x' ? 'You win!' : 'Computer wins!'}</Outcome>}
