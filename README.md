@@ -1,5 +1,7 @@
 # Tic Tac Toe
 
+[Visit Demo](https://tictactoenow.herokuapp.com/)
+
 ## Getting Started
 
 In the project directory
