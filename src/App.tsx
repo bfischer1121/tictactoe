@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import _ from 'lodash'
 
 import { getInitialCombos, getInitialCells, dropCellFromCombos, dropCombosWithCell, getComputerMove } from './lib/logic'
 import Board from './components/Board'
@@ -26,12 +25,6 @@ const App: React.FC<{}> = () => {
 
   const otherPlayer: Player = activePlayer === 'x' ? 'o' : 'x'
 
-  useEffect(() => {
-    if (activePlayer === 'o') {
-      selectCell(getComputerMove(combos))
-    }
-  }, [activePlayer])
-
   const selectCell = (cell: CellIndex) => {
     setCells([...cells.slice(0, cell), activePlayer, ...cells.slice(cell + 1)])
     setCombos({
@@ -39,6 +32,10 @@ const App: React.FC<{}> = () => {
       [otherPlayer]: dropCombosWithCell(combos[otherPlayer], cell)
     } as { [player in Player]: number[][] })
     setActivePlayer(otherPlayer)
+  }
+
+  if (activePlayer === 'o') {
+    selectCell(getComputerMove(combos))
   }
 
   return (
