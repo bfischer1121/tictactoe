@@ -1,3 +1,5 @@
+import { compact, uniq } from 'lodash-es'
+
 const winningCombos: Combo[] = [
   [0, 1, 2],
   [0, 4, 8],
@@ -12,6 +14,31 @@ const winningCombos: Combo[] = [
 export const getInitialCombos = (): Combos => ({ x: winningCombos.slice(0), o: winningCombos.slice(0) })
 
 export const getInitialCells = (): null[] => new Array(9).fill(null)
+
+/**
+ * Returns the game's winner based on the current state of the cells and winning combos.
+ *
+ * @param cells The game's cell values (x, o, or null)
+ */
+export const getWinner = (cells: CellValue[]): { player: Player | null; combo: Combo } | null => {
+  for (let i = 0; i < winningCombos.length; i++) {
+    const cellValues = compact(winningCombos[i].map(cell => cells[cell]))
+    const cellPlayers = uniq(cellValues)
+
+    if (cellValues.length === winningCombos[i].length && cellPlayers.length === 1) {
+      return { player: cellPlayers[0], combo: winningCombos[i] }
+    }
+  }
+
+  return null
+}
+
+/**
+ * Returns whether the game is a draw, with no further moves possible.
+ *
+ * @param cells The game's cell values (x, o, or null)
+ */
+export const isDraw = (cells: CellValue[]): boolean => !cells.includes(null) && !getWinner(cells)
 
 /**
  * Removes a cell from the combos of the player who selected it, reducing the remaining cells necessary for a win.

@@ -1,5 +1,24 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
+import { compact } from 'lodash-es'
+import { lighten } from 'polished'
+
+const pop = keyframes`
+  0%{
+    transform: scale3d(1, 1, 1);
+    box-shadow: none;
+  }
+
+  50%{
+    transform: scale3d(1.2, 1.2, 1.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  100%{
+    transform: scale3d(1, 1, 1);
+    box-shadow: none;
+  }
+`
 
 const Wrap = styled.div`
   display: flex;
@@ -11,15 +30,29 @@ const Wrap = styled.div`
 const Cell = styled.div`
   position: relative;
   margin: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: ${lighten(0.1, '#20202a')};
   color: #fff;
 
   &.clickable {
     cursor: pointer;
 
     :hover {
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: ${lighten(0.2, '#20202a')};
     }
+  }
+
+  &.winning-cell-0,
+  &.winning-cell-1,
+  &.winning-cell-2 {
+    animation: 1500ms ${pop} ease-in-out;
+  }
+
+  &.winning-cell-1 {
+    animation-delay: 500ms;
+  }
+
+  &.winning-cell-2 {
+    animation-delay: 1000ms;
   }
 `
 
@@ -64,10 +97,11 @@ const OMark = styled.div`
 
 interface IBoardProps {
   cells: CellValue[]
+  winner?: { player: Player | null; combo: Combo } | null
   onCellClick?(cell: CellIndex): void
 }
 
-const Board: React.FC<IBoardProps> = ({ cells, onCellClick }) => {
+const Board: React.FC<IBoardProps> = ({ cells, winner, onCellClick }) => {
   const cellWidth = `calc(${(1 / Math.sqrt(cells.length)) * 100}% - 2px)`
 
   return (
@@ -76,7 +110,10 @@ const Board: React.FC<IBoardProps> = ({ cells, onCellClick }) => {
         <Cell
           key={cellIndex}
           style={{ width: cellWidth, paddingBottom: cellWidth }}
-          className={onCellClick && cellValue === null ? 'clickable' : ''}
+          className={compact([
+            onCellClick && cellValue === null ? 'clickable' : null,
+            winner && winner.combo.includes(cellIndex) ? `winning-cell-${winner.combo.indexOf(cellIndex)}` : null
+          ]).join(' ')}
           onClick={() => onCellClick && cellValue === null && onCellClick(cellIndex)}
         >
           {cellValue === 'x' && <XMark />}

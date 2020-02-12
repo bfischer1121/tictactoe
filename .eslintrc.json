@@ -20,6 +20,7 @@
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
+    "no-plusplus": "off",
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "react/prop-types": "off",
